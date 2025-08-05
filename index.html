@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-Check Payment Form - Designer Closets</title>
+    <link rel="icon" type="image/x-icon" href="Assets/logo.ico">
     <style>
         @font-face {
             font-family: 'Master of Break';
@@ -37,7 +38,7 @@
         .header {
             background: linear-gradient(135deg, #0066cc 0%, #004499 100%);
             color: white;
-            padding: 30px;
+            padding: 20px;
             text-align: center;
             position: relative;
         }
@@ -46,7 +47,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .logo {
@@ -70,16 +71,31 @@
             border-radius: 50%;
         }
 
+        .company-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
         .company-name {
             font-family: 'Master of Break', sans-serif;
             font-size: 28px;
             font-weight: normal;
             color: white;
+            margin-bottom: 5px;
+        }
+
+        .company-address {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            line-height: 1.2;
         }
 
         .header h1 {
             font-size: 2.5em;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-weight: 300;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
@@ -90,18 +106,18 @@
         }
 
         .content {
-            padding: 40px;
+            padding: 20px;
         }
 
         .form-section {
-            margin-bottom: 30px;
+            margin-bottom: 15px;
         }
 
         .section-title {
             font-size: 1.2em;
             color: #333;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
             border-bottom: 2px solid #0066cc;
             font-weight: 600;
         }
@@ -109,7 +125,7 @@
         .form-row {
             display: flex;
             gap: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .form-group {
@@ -131,6 +147,7 @@
         input[type="text"],
         input[type="email"],
         input[type="tel"],
+        input[type="password"],
         select,
         textarea {
             width: 100%;
@@ -145,6 +162,7 @@
         input[type="text"]:focus,
         input[type="email"]:focus,
         input[type="tel"]:focus,
+        input[type="password"]:focus,
         select:focus,
         textarea:focus {
             outline: none;
@@ -247,30 +265,31 @@
             background: #e9ecef;
             color: #495057;
             font-weight: 600;
-            width: 20%;
+            width: 35%;
         }
 
         .terms-box {
             background: #f8f9fa;
             border: 1px solid #e1e5e9;
             border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
-            max-height: 250px;
+            padding: 10px;
+            margin: 10px 0;
+            max-height: 200px;
             overflow-y: auto;
         }
 
         .terms-box p {
             font-size: 0.7em;
-            line-height: 1.2;
+            line-height: 1.1;
             color: #666;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
 
         .button-group {
             display: flex;
             gap: 15px;
-            margin-top: 30px;
+            margin-top: 20px;
+            justify-content: center;
         }
 
         .btn {
@@ -346,8 +365,8 @@
             background: #fff3cd;
             border: 1px solid #ffeaa7;
             border-radius: 8px;
-            padding: 15px;
-            margin: 20px 0;
+            padding: 8px;
+            margin: 5px 0;
             font-size: 0.9em;
             color: #856404;
         }
@@ -383,7 +402,10 @@
                 <div class="logo">
                     <img src="Assets/logo.jpg" alt="Designer Closets & Cabinets Logo">
                 </div>
-                <div class="company-name">Designer Closets & Cabinets</div>
+                <div class="company-info">
+                    <div class="company-name">Designer Closets & Cabinets</div>
+                    <div class="company-address">1479 Belladonna Place, St. Cloud, Fl. 34771 - Tel: (407) 505-0865</div>
+                </div>
             </div>
             <h1>E-Check Payment Form</h1>
             <p>Secure Electronic Check Processing</p>
@@ -421,15 +443,14 @@
                 <!-- Payment Information -->
                 <div class="form-section">
                     <h2 class="section-title">Payment Information</h2>
-                                                              <table class="table-display">
-                         <tr>
-                             <td id="paymentTypeAmountLabel">Payment Amount</td>
-                             <td>
-                                 <input type="text" id="amount" name="amount" placeholder="$0.00" required class="amount-input" style="width: 100%; border: none; background: transparent; font-size: 16px; font-weight: 600; color: #333;">
-                             </td>
-                         </tr>
-                     </table>
-                     <input type="hidden" id="paymentType" name="paymentType" required>
+                                                                                   <table class="table-display">
+                          <tr>
+                              <td id="paymentTypeAmountLabel">Payment Amount</td>
+                              <td id="amountDisplay">$0.00</td>
+                          </tr>
+                                            </table>
+                      <input type="hidden" id="amount" name="amount" required>
+                      <input type="hidden" id="paymentType" name="paymentType" required>
                                          <table class="table-display">
                          <tr>
                              <td>Description</td>
@@ -442,6 +463,10 @@
                 <!-- Bank Account Information -->
                 <div class="form-section">
                     <h2 class="section-title">Bank Account Information</h2>
+                         <div class="form-group">
+                             <label for="accountHolder">Account Holder Name *</label>
+                             <input type="text" id="accountHolder" name="accountHolder" required>
+                         </div>
                     <div class="form-row">
                         <div class="form-group">
                             <label for="bankName">Bank Name *</label>
@@ -465,14 +490,11 @@
                             <label for="accountNumber">Account Number *</label>
                             <input type="text" id="accountNumber" name="accountNumber" required>
                         </div>
+                        <div class="form-group">
+                            <label for="confirmAccountNumber">Confirm Account Number *</label>
+                            <input type="password" id="confirmAccountNumber" name="confirmAccountNumber" required>
+                        </div>
                     </div>
-                                         <div class="form-row">
-                         <div class="form-group">
-                             <label for="accountHolder">Account Holder Name *</label>
-                             <input type="text" id="accountHolder" name="accountHolder" required>
-                         </div>
-                     </div>
-                     <input type="hidden" id="confirmAccountNumber" name="confirmAccountNumber" required>
                 </div>
 
                 <!-- Terms and Conditions -->
@@ -480,17 +502,13 @@
                     <h2 class="section-title">Terms and Conditions</h2>
                                          <div class="terms-box">
                          <p><strong>Electronic Check Authorization:</strong> By submitting this form, you authorize Designer Closets & Cabinets to debit your bank account for the specified amount. This authorization may be withdrawn in writing to stop payment.</p>
-                         <p><strong>Payment Authorization:</strong> I authorize this electronic payment from my bank account.</p>
                          <p><strong>Processing Information:</strong></p>
-                         <p>• Processing typically takes 3 business days</p>
-                         <p>• A $45 fee will apply for returned payments</p>
-                         <p>• This payment will be processed through Authorize.Net secure payment gateway</p>
+                         <p>• Processing typically takes 3 business days, unhonored payments will attract a $45.00 fee.</p>            
                      </div>
                 </div>
-
                 <!-- Security Notice -->
                 <div class="security-notice">
-                    <strong>Security Notice:</strong> Form uses secure encryption for your bank information. Your protected data is used for this transaction only.
+                    <strong>Security Notice:</strong> Payment to be processed through Authorize.net's, single use, secure payment gateway.</p>
                 </div>
 
                 <!-- Status Message -->
@@ -500,7 +518,7 @@
                 <div class="button-group">
                     <button type="submit" class="btn btn-primary">
                         <span style="margin-right: 8px;">✓</span>
-                        Process E-Check Payment
+                        Process Payment
                     </button>
                     <button type="button" class="btn btn-secondary" onclick="resetForm()">
                         <span style="margin-right: 8px;">↻</span>
@@ -569,11 +587,24 @@
                 document.getElementById('customerPhoneDisplay').textContent = customerPhone;
             }
             
-            // Populate description display field
-            const description = urlParams.get('description');
-            if (description) {
-                document.getElementById('descriptionDisplay').textContent = description;
-            }
+                         // Populate description display field
+             const description = urlParams.get('description');
+             if (description) {
+                 document.getElementById('descriptionDisplay').textContent = description;
+             }
+             
+             // Populate amount display field
+             const amount = urlParams.get('amount');
+             if (amount) {
+                 const numValue = parseFloat(amount);
+                 if (!isNaN(numValue)) {
+                     const formattedAmount = '$' + numValue.toLocaleString('en-US', {
+                         minimumFractionDigits: 2,
+                         maximumFractionDigits: 2
+                     });
+                     document.getElementById('amountDisplay').textContent = formattedAmount;
+                 }
+             }
             
             // Auto-fill confirm account number if account number is provided
             const accountNumber = document.getElementById('accountNumber');
@@ -648,20 +679,7 @@
             }
         }
 
-        // Format amount input
-        const amountInput = document.getElementById('amount');
-        amountInput.addEventListener('blur', function() {
-            if (this.value) {
-                let value = this.value.replace(/[^\d.]/g, '');
-                const numValue = parseFloat(value);
-                if (!isNaN(numValue)) {
-                    this.value = '$' + numValue.toLocaleString('en-US', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    });
-                }
-            }
-        });
+                 // Amount field is now read-only, no event listener needed
 
         // Validate routing number (must be 9 digits)
         const routingNumber = document.getElementById('routingNumber');
@@ -674,6 +692,19 @@
         accountNumber.addEventListener('input', function() {
             this.value = this.value.replace(/\D/g, '');
         });
+        // Validate confirm account number (only numbers)
+        const confirmAccountNumber = document.getElementById('confirmAccountNumber');
+        confirmAccountNumber.addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '');
+        });
+        // Auto-fill confirm account number when account number changes
+        const accountNumberInput = document.getElementById('accountNumber');
+        const confirmAccountNumberInput = document.getElementById('confirmAccountNumber');
+        if (accountNumberInput && confirmAccountNumberInput) {
+            accountNumberInput.addEventListener('input', function() {
+                confirmAccountNumberInput.value = this.value;
+            });
+        }
 
         // Confirm account number
         const confirmAccountNumber = document.getElementById('confirmAccountNumber');
