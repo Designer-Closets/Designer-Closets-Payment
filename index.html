@@ -198,6 +198,58 @@
             color: #333;
         }
 
+        .payment-type-display {
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            margin-top: 5px;
+        }
+
+        .payment-type-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0066cc;
+            display: block;
+        }
+
+        .info-display {
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            margin-top: 5px;
+        }
+
+        .info-display span {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            display: block;
+        }
+
+        .table-display {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 5px;
+        }
+
+        .table-display td {
+            padding: 8px 12px;
+            border: 1px solid #e1e5e9;
+            background: #f8f9fa;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .table-display td:first-child {
+            background: #e9ecef;
+            color: #495057;
+            font-weight: 600;
+            width: 20%;
+        }
+
         .terms-box {
             background: #f8f9fa;
             border: 1px solid #e1e5e9;
@@ -339,61 +391,52 @@
 
         <div class="content">
             <form id="echeckForm">
-                <!-- Customer Information -->
-                <div class="form-section">
-                    <h2 class="section-title">Customer Information</h2>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="customerName">Full Name *</label>
-                            <input type="text" id="customerName" name="customerName" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="customerEmail">Email Address *</label>
-                            <input type="email" id="customerEmail" name="customerEmail" required>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="customerPhone">Phone Number *</label>
-                            <input type="tel" id="customerPhone" name="customerPhone" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="jobNumber">Job Number *</label>
-                            <input type="text" id="jobNumber" name="jobNumber" required>
-                        </div>
-                    </div>
-                </div>
+                                 <!-- Customer Information -->
+                 <div class="form-section">
+                     <h2 class="section-title">Customer Information</h2>
+                     <table class="table-display">
+                         <tr>
+                             <td>Job Number</td>
+                             <td id="jobNumberDisplay">Not Available</td>
+                         </tr>
+                         <tr>
+                             <td>Name</td>
+                             <td id="customerNameDisplay">Not Available</td>
+                         </tr>
+                         <tr>
+                             <td>Email</td>
+                             <td id="customerEmailDisplay">Not Available</td>
+                         </tr>
+                         <tr>
+                             <td>Phone</td>
+                             <td id="customerPhoneDisplay">Not Available</td>
+                         </tr>
+                     </table>
+                     <input type="hidden" id="jobNumber" name="jobNumber" required>
+                     <input type="hidden" id="customerName" name="customerName" required>
+                     <input type="hidden" id="customerEmail" name="customerEmail" required>
+                     <input type="hidden" id="customerPhone" name="customerPhone" required>
+                 </div>
 
                 <!-- Payment Information -->
                 <div class="form-section">
                     <h2 class="section-title">Payment Information</h2>
-                                         <div class="form-row">
-                         <div class="form-group">
-                             <label for="amount">Payment Amount *</label>
-                             <input type="text" id="amount" name="amount" placeholder="$0.00" required class="amount-input">
-                         </div>
-                     </div>
-                     <div class="form-group">
-                         <label>Payment Type *</label>
-                         <div class="radio-group">
-                             <div class="radio-option">
-                                 <input type="radio" id="paymentTypeDeposit" name="paymentType" value="deposit" required>
-                                 <label for="paymentTypeDeposit">Deposit</label>
-                             </div>
-                             <div class="radio-option">
-                                 <input type="radio" id="paymentTypeFinal" name="paymentType" value="final" required>
-                                 <label for="paymentTypeFinal">Final</label>
-                             </div>
-                             <div class="radio-option">
-                                 <input type="radio" id="paymentTypeProgressive" name="paymentType" value="progressive" required>
-                                 <label for="paymentTypeProgressive">Progressive Payment</label>
-                             </div>
-                         </div>
-                     </div>
-                    <div class="form-group full-width">
-                        <label for="description">Payment Description</label>
-                        <textarea id="description" name="description" rows="3" placeholder="Enter payment description..."></textarea>
-                    </div>
+                                                              <table class="table-display">
+                         <tr>
+                             <td id="paymentTypeAmountLabel">Payment Amount</td>
+                             <td>
+                                 <input type="text" id="amount" name="amount" placeholder="$0.00" required class="amount-input" style="width: 100%; border: none; background: transparent; font-size: 16px; font-weight: 600; color: #333;">
+                             </td>
+                         </tr>
+                     </table>
+                     <input type="hidden" id="paymentType" name="paymentType" required>
+                                         <table class="table-display">
+                         <tr>
+                             <td>Description</td>
+                             <td id="descriptionDisplay">Not Available</td>
+                         </tr>
+                     </table>
+                     <input type="hidden" id="description" name="description" required>
                 </div>
 
                 <!-- Bank Account Information -->
@@ -436,19 +479,18 @@
                 <div class="form-section">
                     <h2 class="section-title">Terms and Conditions</h2>
                                          <div class="terms-box">
-                         <p><strong>Electronic Check Authorization:</strong> By submitting this form, you authorize Designer Closets & Cabinets to debit your bank account for the specified amount. This authorization will remain in effect until you provide written notification to stop payment.</p>
+                         <p><strong>Electronic Check Authorization:</strong> By submitting this form, you authorize Designer Closets & Cabinets to debit your bank account for the specified amount. This authorization may be withdrawn in writing to stop payment.</p>
                          <p><strong>Payment Authorization:</strong> I authorize this electronic payment from my bank account.</p>
                          <p><strong>Processing Information:</strong></p>
                          <p>• Processing typically takes 3 business days</p>
                          <p>• A $45 fee will apply for returned payments</p>
-                         <p>• Your bank account information is encrypted and secure</p>
                          <p>• This payment will be processed through Authorize.Net secure payment gateway</p>
                      </div>
                 </div>
 
                 <!-- Security Notice -->
                 <div class="security-notice">
-                    <strong>Security Notice:</strong> This form uses secure encryption for your bank account information. Your data is protected and will only be used for this transaction. Processing typically takes 3 business days.
+                    <strong>Security Notice:</strong> Form uses secure encryption for your bank information. Your protected data is used for this transaction only.
                 </div>
 
                 <!-- Status Message -->
@@ -508,6 +550,31 @@
                 }
             });
             
+            // Populate customer information display fields
+            const jobNumber = urlParams.get('jobNumber');
+            const customerName = urlParams.get('customerName');
+            const customerEmail = urlParams.get('customerEmail');
+            const customerPhone = urlParams.get('customerPhone');
+            
+            if (jobNumber) {
+                document.getElementById('jobNumberDisplay').textContent = jobNumber;
+            }
+            if (customerName) {
+                document.getElementById('customerNameDisplay').textContent = customerName;
+            }
+            if (customerEmail) {
+                document.getElementById('customerEmailDisplay').textContent = customerEmail;
+            }
+            if (customerPhone) {
+                document.getElementById('customerPhoneDisplay').textContent = customerPhone;
+            }
+            
+            // Populate description display field
+            const description = urlParams.get('description');
+            if (description) {
+                document.getElementById('descriptionDisplay').textContent = description;
+            }
+            
             // Auto-fill confirm account number if account number is provided
             const accountNumber = document.getElementById('accountNumber');
             const confirmAccountNumber = document.getElementById('confirmAccountNumber');
@@ -515,13 +582,63 @@
                 confirmAccountNumber.value = accountNumber.value;
             }
             
-            // Handle payment type radio button pre-population
+            // Handle payment type display from URL parameter
             const paymentType = urlParams.get('paymentType');
             if (paymentType) {
-                const radioButton = document.querySelector(`input[name="paymentType"][value="${paymentType}"]`);
-                if (radioButton) {
-                    radioButton.checked = true;
-                }
+                const paymentTypeInput = document.getElementById('paymentType');
+                const paymentTypeAmountLabel = document.getElementById('paymentTypeAmountLabel');
+                
+                                 // Set the display text based on the payment type
+                 let displayText = 'Payment Amount';
+                 switch(paymentType) {
+                     case 'deposit':
+                         displayText = 'Deposit Amount';
+                         break;
+                     case 'final':
+                         displayText = 'Final Amount';
+                         break;
+                     case 'progressive':
+                         displayText = 'Progressive Payment Amount';
+                         break;
+                 }
+                
+                paymentTypeAmountLabel.textContent = displayText;
+                paymentTypeInput.value = paymentType;
+            }
+            
+            // Update label when payment type changes (for manual entry)
+            const updatePaymentTypeLabel = () => {
+                const paymentTypeInput = document.getElementById('paymentType');
+                const paymentTypeAmountLabel = document.getElementById('paymentTypeAmountLabel');
+                
+                                 if (paymentTypeInput && paymentTypeInput.value) {
+                     let displayText = 'Payment Amount';
+                     switch(paymentTypeInput.value) {
+                         case 'deposit':
+                             displayText = 'Deposit Amount';
+                             break;
+                         case 'final':
+                             displayText = 'Final Amount';
+                             break;
+                         case 'progressive':
+                             displayText = 'Progressive Payment Amount';
+                             break;
+                     }
+                     paymentTypeAmountLabel.textContent = displayText;
+                 }
+            };
+            
+            // Listen for changes to payment type (if manually entered)
+            const paymentTypeInput = document.getElementById('paymentType');
+            if (paymentTypeInput) {
+                paymentTypeInput.addEventListener('change', updatePaymentTypeLabel);
+            }
+            
+            // Auto-populate Account Holder Name from customer name display
+            const customerNameDisplay = document.getElementById('customerNameDisplay');
+            const accountHolder = document.getElementById('accountHolder');
+            if (customerNameDisplay && accountHolder && customerNameDisplay.textContent !== 'Not Available') {
+                accountHolder.value = customerNameDisplay.textContent;
             }
             
             // Show success message if data was pre-populated
@@ -563,6 +680,13 @@
         confirmAccountNumber.addEventListener('input', function() {
             this.value = this.value.replace(/\D/g, '');
         });
+        
+        // Auto-populate Account Holder Name from customer name display
+        const customerNameDisplay = document.getElementById('customerNameDisplay');
+        const accountHolder = document.getElementById('accountHolder');
+        if (customerNameDisplay && accountHolder && customerNameDisplay.textContent !== 'Not Available') {
+            accountHolder.value = customerNameDisplay.textContent;
+        }
 
         function showStatus(message, type) {
             const statusMessage = document.getElementById('statusMessage');
@@ -600,7 +724,7 @@
                         isValid = false;
                     }
                 } else {
-                    // For text inputs, selects, etc.
+                    // For text inputs, selects, hidden fields, etc.
                     if (!field.value.trim()) {
                         isValid = false;
                     }
