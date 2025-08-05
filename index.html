@@ -1,771 +1,720 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Check Payment Form - Designer Closets</title>
-    <style>
-        @font-face {
-            font-family: 'Master of Break';
-            src: url('Assets/Master_of_break.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-        }
+#!/usr/bin/env python3
+"""
+Email E-Check Form Dialog
+Dialog for sending E-Check forms via email to clients
+"""
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+import os
+import urllib.parse
+from datetime import datetime
+from PyQt5.QtWidgets import (
+    QDialog, QVBoxLayout, QHBoxLayout, QFormLayout, QLabel, 
+    QLineEdit, QTextEdit, QPushButton, QMessageBox, QGroupBox,
+    QComboBox, QCheckBox, QFileDialog, QRadioButton
+)
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFont
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #0066cc 0%, #004499 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-            position: relative;
-        }
-
-        .logo-section {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        .logo {
-            width: 80px;
-            height: 80px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 25px;
-            overflow: hidden;
-            border: 2px solid white;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
-        }
-
-        .company-name {
-            font-family: 'Master of Break', sans-serif;
-            font-size: 28px;
-            font-weight: normal;
-            color: white;
-        }
-
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            font-weight: 300;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        .header p {
-            font-size: 1.2em;
-            opacity: 0.9;
-        }
-
-        .content {
-            padding: 40px;
-        }
-
-        .form-section {
-            margin-bottom: 30px;
-        }
-
-        .section-title {
-            font-size: 1.2em;
-            color: #333;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #0066cc;
-            font-weight: 600;
-        }
-
-        .form-row {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            flex: 1;
-        }
-
-        .form-group.full-width {
-            flex: 1 1 100%;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-            font-weight: 600;
-            font-size: 0.95em;
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="tel"],
-        select,
-        textarea {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e1e5e9;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            background: #f8f9fa;
-        }
-
-        input[type="text"]:focus,
-        input[type="email"]:focus,
-        input[type="tel"]:focus,
-        select:focus,
-        textarea:focus {
-            outline: none;
-            border-color: #0066cc;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
-        }
-
-        .amount-input {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #0066cc;
-        }
-
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            accent-color: #0066cc;
-        }
-
-        .radio-group {
-            display: flex;
-            gap: 20px;
-            margin-top: 10px;
-        }
-
-        .radio-option {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        input[type="radio"] {
-            width: 18px;
-            height: 18px;
-            accent-color: #0066cc;
-            cursor: pointer;
-        }
-
-        .radio-option label {
-            margin-bottom: 0;
-            cursor: pointer;
-            font-weight: 500;
-            color: #333;
-        }
-
-        .payment-type-display {
-            padding: 12px 15px;
-            background: #f8f9fa;
-            border: 2px solid #e1e5e9;
-            border-radius: 8px;
-            margin-top: 5px;
-        }
-
-        .payment-type-label {
-            font-size: 16px;
-            font-weight: 600;
-            color: #0066cc;
-            display: block;
-        }
-
-        .info-display {
-            padding: 12px 15px;
-            background: #f8f9fa;
-            border: 2px solid #e1e5e9;
-            border-radius: 8px;
-            margin-top: 5px;
-        }
-
-        .info-display span {
-            font-size: 16px;
-            font-weight: 600;
-            color: #333;
-            display: block;
-        }
-
-        .table-display {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 5px;
-        }
-
-        .table-display td {
-            padding: 8px 12px;
-            border: 1px solid #e1e5e9;
-            background: #f8f9fa;
-            font-size: 16px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .table-display td:first-child {
-            background: #e9ecef;
-            color: #495057;
-            font-weight: 600;
-            width: 20%;
-        }
-
-        .terms-box {
-            background: #f8f9fa;
-            border: 1px solid #e1e5e9;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
-            max-height: 250px;
-            overflow-y: auto;
-        }
-
-        .terms-box p {
-            font-size: 0.7em;
-            line-height: 1.2;
-            color: #666;
-            margin-bottom: 5px;
-        }
-
-        .button-group {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-        }
-
-        .btn {
-            padding: 15px 30px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #218838 0%, #1ea085 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #5a6268;
-            transform: translateY(-2px);
-        }
-
-        .btn-danger {
-            background: #dc3545;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #c82333;
-            transform: translateY(-2px);
-        }
-
-        .status-message {
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            font-weight: 600;
-        }
-
-        .status-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .status-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .status-info {
-            background: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-        }
-
-        .security-notice {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 20px 0;
-            font-size: 0.9em;
-            color: #856404;
-        }
-
-        .security-notice strong {
-            color: #856404;
-        }
-
-        @media (max-width: 768px) {
-            .form-row {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .button-group {
-                flex-direction: column;
-            }
-            
-            .header h1 {
-                font-size: 2em;
-            }
-            
-            .content {
-                padding: 20px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <div class="logo-section">
-                <div class="logo">
-                    <img src="Assets/logo.jpg" alt="Designer Closets & Cabinets Logo">
-                </div>
-                <div class="company-name">Designer Closets & Cabinets</div>
-            </div>
-            <h1>E-Check Payment Form</h1>
-            <p>Secure Electronic Check Processing</p>
-        </div>
-
-        <div class="content">
-            <form id="echeckForm">
-                                 <!-- Customer Information -->
-                 <div class="form-section">
-                     <h2 class="section-title">Customer Information</h2>
-                     <table class="table-display">
-                         <tr>
-                             <td>Job Number</td>
-                             <td id="jobNumberDisplay">Not Available</td>
-                         </tr>
-                         <tr>
-                             <td>Name</td>
-                             <td id="customerNameDisplay">Not Available</td>
-                         </tr>
-                         <tr>
-                             <td>Email</td>
-                             <td id="customerEmailDisplay">Not Available</td>
-                         </tr>
-                         <tr>
-                             <td>Phone</td>
-                             <td id="customerPhoneDisplay">Not Available</td>
-                         </tr>
-                     </table>
-                     <input type="hidden" id="jobNumber" name="jobNumber" required>
-                     <input type="hidden" id="customerName" name="customerName" required>
-                     <input type="hidden" id="customerEmail" name="customerEmail" required>
-                     <input type="hidden" id="customerPhone" name="customerPhone" required>
-                 </div>
-
-                <!-- Payment Information -->
-                <div class="form-section">
-                    <h2 class="section-title">Payment Information</h2>
-                                                              <table class="table-display">
-                         <tr>
-                             <td id="paymentTypeAmountLabel">Payment Amount</td>
-                             <td>
-                                 <input type="text" id="amount" name="amount" placeholder="$0.00" required class="amount-input" style="width: 100%; border: none; background: transparent; font-size: 16px; font-weight: 600; color: #333;">
-                             </td>
-                         </tr>
-                     </table>
-                     <input type="hidden" id="paymentType" name="paymentType" required>
-                                         <table class="table-display">
-                         <tr>
-                             <td>Description</td>
-                             <td id="descriptionDisplay">Not Available</td>
-                         </tr>
-                     </table>
-                     <input type="hidden" id="description" name="description" required>
-                </div>
-
-                <!-- Bank Account Information -->
-                <div class="form-section">
-                    <h2 class="section-title">Bank Account Information</h2>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="bankName">Bank Name *</label>
-                            <input type="text" id="bankName" name="bankName" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="accountType">Account Type *</label>
-                            <select id="accountType" name="accountType" required>
-                                <option value="">Select Account Type</option>
-                                <option value="checking">Checking</option>
-                                <option value="savings">Savings</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="routingNumber">Routing Number *</label>
-                            <input type="text" id="routingNumber" name="routingNumber" maxlength="9" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="accountNumber">Account Number *</label>
-                            <input type="text" id="accountNumber" name="accountNumber" required>
-                        </div>
-                    </div>
-                                         <div class="form-row">
-                         <div class="form-group">
-                             <label for="accountHolder">Account Holder Name *</label>
-                             <input type="text" id="accountHolder" name="accountHolder" required>
-                         </div>
-                     </div>
-                     <input type="hidden" id="confirmAccountNumber" name="confirmAccountNumber" required>
-                </div>
-
-                <!-- Terms and Conditions -->
-                <div class="form-section">
-                    <h2 class="section-title">Terms and Conditions</h2>
-                                         <div class="terms-box">
-                         <p><strong>Electronic Check Authorization:</strong> By submitting this form, you authorize Designer Closets & Cabinets to debit your bank account for the specified amount. This authorization may be withdrawn in writing to stop payment.</p>
-                         <p><strong>Payment Authorization:</strong> I authorize this electronic payment from my bank account.</p>
-                         <p><strong>Processing Information:</strong></p>
-                         <p>• Processing typically takes 3 business days</p>
-                         <p>• A $45 fee will apply for returned payments</p>
-                         <p>• This payment will be processed through Authorize.Net secure payment gateway</p>
-                     </div>
-                </div>
-
-                <!-- Security Notice -->
-                <div class="security-notice">
-                    <strong>Security Notice:</strong> Form uses secure encryption for your bank information. Your protected data is used for this transaction only.
-                </div>
-
-                <!-- Status Message -->
-                <div id="statusMessage" class="status-message" style="display: none;"></div>
-
-                <!-- Action Buttons -->
-                <div class="button-group">
-                    <button type="submit" class="btn btn-primary">
-                        <span style="margin-right: 8px;">✓</span>
-                        Process E-Check Payment
-                    </button>
-                    <button type="button" class="btn btn-secondary" onclick="resetForm()">
-                        <span style="margin-right: 8px;">↻</span>
-                        Reset Form
-                    </button>
-                    <button type="button" class="btn btn-danger" onclick="window.close()">
-                        <span style="margin-right: 8px;">✕</span>
-                        Cancel
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        // Populate form from URL parameters
-        function populateFromUrl() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const fields = [
-                'customerName', 'customerEmail', 'customerPhone', 'jobNumber',
-                'amount', 'paymentType', 'description', 'bankName', 'accountType',
-                'routingNumber', 'accountNumber', 'accountHolder'
-            ];
-
-            fields.forEach(field => {
-                const value = urlParams.get(field);
-                if (value) {
-                    const element = document.getElementById(field);
-                    if (element) {
-                        if (element.tagName === 'SELECT') {
-                            for (let option of element.options) {
-                                if (option.value === value) {
-                                    option.selected = true;
-                                    break;
-                                }
-                            }
-                        } else if (element.type === 'radio') {
-                            // Handle radio button pre-population
-                            const radioButton = document.querySelector(`input[name="${field}"][value="${value}"]`);
-                            if (radioButton) {
-                                radioButton.checked = true;
-                            }
-                        } else {
-                            element.value = value;
-                        }
-                    }
-                }
-            });
-            
-            // Populate customer information display fields
-            const jobNumber = urlParams.get('jobNumber');
-            const customerName = urlParams.get('customerName');
-            const customerEmail = urlParams.get('customerEmail');
-            const customerPhone = urlParams.get('customerPhone');
-            
-            if (jobNumber) {
-                document.getElementById('jobNumberDisplay').textContent = jobNumber;
-            }
-            if (customerName) {
-                document.getElementById('customerNameDisplay').textContent = customerName;
-            }
-            if (customerEmail) {
-                document.getElementById('customerEmailDisplay').textContent = customerEmail;
-            }
-            if (customerPhone) {
-                document.getElementById('customerPhoneDisplay').textContent = customerPhone;
-            }
-            
-            // Populate description display field
-            const description = urlParams.get('description');
-            if (description) {
-                document.getElementById('descriptionDisplay').textContent = description;
-            }
-            
-            // Auto-fill confirm account number if account number is provided
-            const accountNumber = document.getElementById('accountNumber');
-            const confirmAccountNumber = document.getElementById('confirmAccountNumber');
-            if (accountNumber && confirmAccountNumber && accountNumber.value) {
-                confirmAccountNumber.value = accountNumber.value;
-            }
-            
-            // Handle payment type display from URL parameter
-            const paymentType = urlParams.get('paymentType');
-            if (paymentType) {
-                const paymentTypeInput = document.getElementById('paymentType');
-                const paymentTypeAmountLabel = document.getElementById('paymentTypeAmountLabel');
-                
-                                 // Set the display text based on the payment type
-                 let displayText = 'Payment Amount';
-                 switch(paymentType) {
-                     case 'deposit':
-                         displayText = 'Deposit Amount';
-                         break;
-                     case 'final':
-                         displayText = 'Final Amount';
-                         break;
-                     case 'progressive':
-                         displayText = 'Progressive Payment Amount';
-                         break;
-                 }
-                
-                paymentTypeAmountLabel.textContent = displayText;
-                paymentTypeInput.value = paymentType;
-            }
-            
-            // Update label when payment type changes (for manual entry)
-            const updatePaymentTypeLabel = () => {
-                const paymentTypeInput = document.getElementById('paymentType');
-                const paymentTypeAmountLabel = document.getElementById('paymentTypeAmountLabel');
-                
-                                 if (paymentTypeInput && paymentTypeInput.value) {
-                     let displayText = 'Payment Amount';
-                     switch(paymentTypeInput.value) {
-                         case 'deposit':
-                             displayText = 'Deposit Amount';
-                             break;
-                         case 'final':
-                             displayText = 'Final Amount';
-                             break;
-                         case 'progressive':
-                             displayText = 'Progressive Payment Amount';
-                             break;
-                     }
-                     paymentTypeAmountLabel.textContent = displayText;
-                 }
-            };
-            
-            // Listen for changes to payment type (if manually entered)
-            const paymentTypeInput = document.getElementById('paymentType');
-            if (paymentTypeInput) {
-                paymentTypeInput.addEventListener('change', updatePaymentTypeLabel);
-            }
-            
-            // Auto-populate Account Holder Name from customer name display
-            const customerNameDisplay = document.getElementById('customerNameDisplay');
-            const accountHolder = document.getElementById('accountHolder');
-            if (customerNameDisplay && accountHolder && customerNameDisplay.textContent !== 'Not Available') {
-                accountHolder.value = customerNameDisplay.textContent;
-            }
-            
-            // Show success message if data was pre-populated
-            const populatedFields = fields.filter(field => urlParams.get(field));
-            if (populatedFields.length > 0) {
-                showStatus('✅ Form pre-populated with your information. Please review and submit.', 'info');
-            }
-        }
-
-        // Format amount input
-        const amountInput = document.getElementById('amount');
-        amountInput.addEventListener('blur', function() {
-            if (this.value) {
-                let value = this.value.replace(/[^\d.]/g, '');
-                const numValue = parseFloat(value);
-                if (!isNaN(numValue)) {
-                    this.value = '$' + numValue.toLocaleString('en-US', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    });
-                }
-            }
-        });
-
-        // Validate routing number (must be 9 digits)
-        const routingNumber = document.getElementById('routingNumber');
-        routingNumber.addEventListener('input', function() {
-            this.value = this.value.replace(/\D/g, '').substring(0, 9);
-        });
-
-        // Validate account number
-        const accountNumber = document.getElementById('accountNumber');
-        accountNumber.addEventListener('input', function() {
-            this.value = this.value.replace(/\D/g, '');
-        });
-
-        // Confirm account number
-        const confirmAccountNumber = document.getElementById('confirmAccountNumber');
-        confirmAccountNumber.addEventListener('input', function() {
-            this.value = this.value.replace(/\D/g, '');
-        });
+class EmailECheckDialog(QDialog):
+    """Dialog for sending E-Check forms via email"""
+    
+    def __init__(self, parent=None, customer_data=None, job_data=None, amount=None):
+        super().__init__(parent)
+        self.customer_data = customer_data or {}
+        self.job_data = job_data or {}
+        self.amount = amount or 0.0
         
-        // Auto-populate Account Holder Name from customer name display
-        const customerNameDisplay = document.getElementById('customerNameDisplay');
-        const accountHolder = document.getElementById('accountHolder');
-        if (customerNameDisplay && accountHolder && customerNameDisplay.textContent !== 'Not Available') {
-            accountHolder.value = customerNameDisplay.textContent;
-        }
-
-        function showStatus(message, type) {
-            const statusMessage = document.getElementById('statusMessage');
-            statusMessage.textContent = message;
-            statusMessage.className = `status-message status-${type}`;
-            statusMessage.style.display = 'block';
-        }
-
-        function resetForm() {
-            if (confirm('Are you sure you want to reset the form? All entered data will be lost.')) {
-                document.getElementById('echeckForm').reset();
-                document.getElementById('statusMessage').style.display = 'none';
-            }
-        }
-
-        // Form submission - ACTIVE MODE
-        document.getElementById('echeckForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        self.setWindowTitle("Email E-Check Form")
+        self.resize(600, 500)
+        self.setModal(True)
+        
+        # Get existing Gmail API from main application
+        self.gmail_api = self.get_gmail_api_from_parent()
+        
+        self.init_ui()
+        self.load_customer_data()
+        
+        # Check email status from parent
+        self.check_email_status()
+    
+    def get_gmail_api_from_parent(self):
+        """Get the existing Gmail API instance from the main application"""
+        try:
+            # Traverse up the parent hierarchy to find the main application
+            current_parent = self.parent()
+            depth = 0
+            print(f"🔍 Searching for Gmail API in parent hierarchy...")
             
-            // Validate form
-            const requiredFields = this.querySelectorAll('[required]');
-            let isValid = true;
-
-            requiredFields.forEach(field => {
-                if (field.type === 'radio') {
-                    // For radio buttons, check if any in the group is selected
-                    const radioGroup = document.querySelectorAll(`input[name="${field.name}"]`);
-                    const isRadioSelected = Array.from(radioGroup).some(radio => radio.checked);
-                    if (!isRadioSelected) {
-                        isValid = false;
-                    }
-                } else if (field.type === 'checkbox') {
-                    // For checkboxes, check if checked
-                    if (!field.checked) {
-                        isValid = false;
-                    }
-                } else {
-                    // For text inputs, selects, hidden fields, etc.
-                    if (!field.value.trim()) {
-                        isValid = false;
-                    }
-                }
-            });
-
-            if (!isValid) {
-                showStatus('Please fill in all required fields.', 'error');
-                return;
-            }
-
-            // Validate account numbers match
-            const accountNumber = document.getElementById('accountNumber').value;
-            const confirmAccountNumber = document.getElementById('confirmAccountNumber').value;
-            
-            if (accountNumber !== confirmAccountNumber) {
-                showStatus('Account numbers do not match. Please check and try again.', 'error');
-                return;
-            }
-
-            // Validate routing number length
-            const routingNumber = document.getElementById('routingNumber').value;
-            if (routingNumber.length !== 9) {
-                showStatus('Routing number must be exactly 9 digits.', 'error');
-                return;
-            }
-
-            // Show processing message
-            showStatus('🔄 Processing payment through Authorize.Net secure gateway...', 'info');
-
-            // Simulate payment processing (in real implementation, this would call Authorize.Net API)
-            setTimeout(() => {
-                showStatus('✅ Payment processed successfully! Your payment has been submitted to Authorize.Net for processing. You will receive a confirmation email shortly.', 'success');
+            while current_parent and depth < 15:  # Increased depth limit
+                print(f"  Level {depth}: {type(current_parent).__name__}")
                 
-                // In production, this would send the payment data to Authorize.Net
-                // and handle the response accordingly
-            }, 2000);
-        });
+                # Check if parent has gmail_api directly
+                if hasattr(current_parent, 'gmail_api'):
+                    print(f"✅ Found gmail_api in {type(current_parent).__name__}")
+                    gmail_api = current_parent.gmail_api
+                    # Ensure it's authenticated
+                    if hasattr(gmail_api, 'authenticate') and not hasattr(gmail_api, 'service'):
+                        print(f"  🔐 Authenticating Gmail API...")
+                        gmail_api.authenticate()
+                    return gmail_api
+                
+                # Check if parent has email_service with gmail_api
+                if hasattr(current_parent, 'email_service'):
+                    print(f"✅ Found email_service in {type(current_parent).__name__}")
+                    if hasattr(current_parent.email_service, 'gmail_api'):
+                        gmail_api = current_parent.email_service.gmail_api
+                        # Ensure it's authenticated
+                        if hasattr(gmail_api, 'authenticate') and not hasattr(gmail_api, 'service'):
+                            print(f"  🔐 Authenticating Gmail API...")
+                            gmail_api.authenticate()
+                        return gmail_api
+                
+                # Check if parent has EmailService instance
+                if hasattr(current_parent, 'service') and hasattr(current_parent.service, 'gmail_api'):
+                    print(f"✅ Found service.gmail_api in {type(current_parent).__name__}")
+                    gmail_api = current_parent.service.gmail_api
+                    # Ensure it's authenticated
+                    if hasattr(gmail_api, 'authenticate') and not hasattr(gmail_api, 'service'):
+                        print(f"  🔐 Authenticating Gmail API...")
+                        gmail_api.authenticate()
+                    return gmail_api
+                
+                # Check if parent has any attribute that might contain EmailService
+                for attr_name in dir(current_parent):
+                    if not attr_name.startswith('_'):  # Skip private attributes
+                        try:
+                            attr_value = getattr(current_parent, attr_name)
+                            if hasattr(attr_value, 'gmail_api'):
+                                print(f"✅ Found {attr_name}.gmail_api in {type(current_parent).__name__}")
+                                gmail_api = attr_value.gmail_api
+                                # Ensure it's authenticated
+                                if hasattr(gmail_api, 'authenticate') and not hasattr(gmail_api, 'service'):
+                                    print(f"  🔐 Authenticating Gmail API...")
+                                    gmail_api.authenticate()
+                                return gmail_api
+                        except:
+                            pass
+                
+                current_parent = current_parent.parent()
+                depth += 1
+            
+            # If not found, try to get from EmailService directly
+            try:
+                from email_service import EmailService
+                email_service = EmailService()
+                if hasattr(email_service, 'gmail_api'):
+                    print(f"✅ Created new EmailService and found gmail_api")
+                    gmail_api = email_service.gmail_api
+                    # Ensure it's authenticated
+                    if hasattr(gmail_api, 'authenticate') and not hasattr(gmail_api, 'service'):
+                        print(f"  🔐 Authenticating Gmail API...")
+                        gmail_api.authenticate()
+                    return gmail_api
+            except Exception as e:
+                print(f"⚠️ Could not create EmailService: {e}")
+            
+            # If not found, create a new instance (fallback)
+            print("⚠️ Gmail API not found in parent, creating new instance")
+            from gmail_api import GmailAPI
+            gmail_api = GmailAPI()
+            # Try to authenticate the new instance
+            try:
+                print(f"  🔐 Authenticating new Gmail API instance...")
+                gmail_api.authenticate()
+            except Exception as e:
+                print(f"  ⚠️ Could not authenticate new Gmail API: {e}")
+            return gmail_api
+            
+        except Exception as e:
+            print(f"❌ Error getting Gmail API from parent: {e}")
+            # Fallback to new instance
+            from gmail_api import GmailAPI
+            gmail_api = GmailAPI()
+            # Try to authenticate the fallback instance
+            try:
+                print(f"  🔐 Authenticating fallback Gmail API instance...")
+                gmail_api.authenticate()
+            except Exception as auth_e:
+                print(f"  ⚠️ Could not authenticate fallback Gmail API: {auth_e}")
+            return gmail_api
+        
+    def init_ui(self):
+        """Initialize the user interface"""
+        layout = QVBoxLayout()
+        
+        # Title
+        title_label = QLabel("Send E-Check Form via Email")
+        title_label.setStyleSheet("font-size: 18px; font-weight: bold; color: #0066cc;")
+        layout.addWidget(title_label)
+        
+        # Email Status Check
+        self.email_status_label = QLabel("Checking email system status...")
+        self.email_status_label.setStyleSheet("color: #666666; font-style: italic;")
+        layout.addWidget(self.email_status_label)
+        
+        # Recipient Information Section
+        recipient_group = QGroupBox("Recipient Information")
+        recipient_layout = QFormLayout()
+        
+        # Recipient Email
+        self.recipient_email_edit = QLineEdit()
+        self.recipient_email_edit.setPlaceholderText("client@example.com")
+        recipient_layout.addRow("Recipient Email:", self.recipient_email_edit)
+        
+        # Client Name
+        self.client_name_edit = QLineEdit()
+        self.client_name_edit.setPlaceholderText("Client Name")
+        recipient_layout.addRow("Client Name:", self.client_name_edit)
+        
+        recipient_group.setLayout(recipient_layout)
+        layout.addWidget(recipient_group)
+        
+        # Payment Type Radio Group
+        payment_type_group = QGroupBox("Type of Payment")
+        payment_type_layout = QHBoxLayout()
+        
+        self.deposit_radio = QRadioButton("Deposit")
+        self.deposit_radio.setChecked(True)  # Default to Deposit
+        self.final_radio = QRadioButton("Final")
+        self.progressive_radio = QRadioButton("Progressive Payment")
+        
+        # Connect radio buttons to update description
+        self.deposit_radio.toggled.connect(self.on_payment_type_changed)
+        self.final_radio.toggled.connect(self.on_payment_type_changed)
+        self.progressive_radio.toggled.connect(self.on_payment_type_changed)
+        
+        payment_type_layout.addWidget(self.deposit_radio)
+        payment_type_layout.addWidget(self.final_radio)
+        payment_type_layout.addWidget(self.progressive_radio)
+        payment_type_layout.addStretch()
+        
+        payment_type_group.setLayout(payment_type_layout)
+        layout.addWidget(payment_type_group)
+        
+        # Payment Information Section
+        payment_group = QGroupBox("Payment Information")
+        payment_layout = QFormLayout()
+        
+        # Job Number
+        self.job_number_edit = QLineEdit()
+        self.job_number_edit.setPlaceholderText("Job Number")
+        payment_layout.addRow("Job Number:", self.job_number_edit)
+        
+        # Amount
+        self.amount_edit = QLineEdit()
+        self.amount_edit.setPlaceholderText("Amount")
+        payment_layout.addRow("Amount:", self.amount_edit)
+        
+        # Description
+        self.description_edit = QTextEdit()
+        self.description_edit.setMaximumHeight(60)
+        self.description_edit.setPlaceholderText("Payment description...")
+        payment_layout.addRow("Description:", self.description_edit)
+        
+        payment_group.setLayout(payment_layout)
+        layout.addWidget(payment_group)
+        
+        # Email Content Section
+        content_group = QGroupBox("Email Content")
+        content_layout = QFormLayout()
+        
+        # Subject
+        self.subject_edit = QLineEdit()
+        self.subject_edit.setPlaceholderText("Email subject...")
+        content_layout.addRow("Subject:", self.subject_edit)
+        
+        # Message
+        self.message_edit = QTextEdit()
+        self.message_edit.setMaximumHeight(100)
+        self.message_edit.setPlaceholderText("Additional message to include in email...")
+        content_layout.addRow("Message:", self.message_edit)
+        
+        content_group.setLayout(content_layout)
+        layout.addWidget(content_group)
+        
+        # Options Section
+        options_group = QGroupBox("Options")
+        options_layout = QVBoxLayout()
+        
+        # Include HTML form attachment
+        self.include_form_check = QCheckBox("Include HTML form as attachment")
+        self.include_form_check.setChecked(True)
+        options_layout.addWidget(self.include_form_check)
+        
+        options_group.setLayout(options_layout)
+        layout.addWidget(options_group)
+        
+        # Buttons
+        button_layout = QHBoxLayout()
+        
+        self.cancel_btn = QPushButton("Cancel")
+        self.cancel_btn.clicked.connect(self.reject)
+        self.cancel_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #dc3545;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #c82333;
+            }
+        """)
+        
+        self.send_btn = QPushButton("Send Email")
+        self.send_btn.clicked.connect(self.send_email)
+        self.send_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #28a745;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #218838;
+            }
+        """)
+        
+        button_layout.addWidget(self.cancel_btn)
+        button_layout.addStretch()
+        button_layout.addWidget(self.send_btn)
+        
+        layout.addLayout(button_layout)
+        
+        self.setLayout(layout)
+        
+    def load_customer_data(self):
+        """Load customer data from parent"""
+        try:
+            if self.customer_data:
+                if 'name' in self.customer_data:
+                    self.client_name_edit.setText(self.customer_data['name'])
+                if 'email' in self.customer_data:
+                    self.recipient_email_edit.setText(self.customer_data['email'])
+            
+            if self.job_data:
+                if 'job_no' in self.job_data:
+                    self.job_number_edit.setText(self.job_data['job_no'])
+                if 'description' in self.job_data:
+                    self.description_edit.setPlainText(self.job_data['description'])
+            
+            # Set amount
+            if self.amount > 0:
+                self.amount_edit.setText(f"${self.amount:,.2f}")
+            
+            # Set default subject
+            job_no = self.job_data.get('job_no', '')
+            if job_no:
+                self.subject_edit.setText(f"E-Check Payment Form - Job #{job_no}")
+            
+            # Set default additional message
+            self.message_edit.setPlainText("Please find attached a \"E-Check Payment\" form for the payment of your payment requirements.")
+            
+        except Exception as e:
+            print(f"Error loading customer data: {e}")
+        
+        # Update description based on payment type
+        self.update_description_format()
+    
+    def on_payment_type_changed(self):
+        """Handle payment type radio button changes"""
+        self.update_description_format()
+    
+    def update_description_format(self):
+        """Update description format based on payment type"""
+        if not self.job_data:
+            return
+            
+        job_no = self.job_data.get('job_no', '')
+        description = self.job_data.get('description', '')
+        
+        # Get financial data from parent if available
+        order_value = 0.0
+        deposit_paid = 0.0
+        accessories_amount = 0.0
+        
+        try:
+            # Try to get data from parent Payments dialog
+            if hasattr(self.parent(), 'order_value_edit'):
+                order_value_text = self.parent().order_value_edit.text().replace('$', '').replace(',', '')
+                order_value = float(order_value_text) if order_value_text else 0.0
+            if hasattr(self.parent(), 'deposit_paid_edit'):
+                deposit_text = self.parent().deposit_paid_edit.text().replace('$', '').replace(',', '')
+                deposit_paid = float(deposit_text) if deposit_text else 0.0
+            if hasattr(self.parent(), 'summary_label'):
+                # Try to extract accessories amount from summary
+                summary_text = self.parent().summary_label.text()
+                # This is a simplified extraction - you might need to adjust based on actual summary format
+                accessories_amount = 0.0  # Default value
+        except:
+            pass
+        
+        # Format description based on payment type
+        if self.deposit_radio.isChecked():
+            # Deposit payment
+            desc_text = f"Job No. {job_no} - {description}\n"
+            desc_text += f"Full Price: ${order_value:,.2f} - Deposit Required: ${deposit_paid:,.2f}"
+            if accessories_amount > 0:
+                desc_text += f" + Accessories Ordered: ${accessories_amount:,.2f}"
+        elif self.final_radio.isChecked():
+            # Final payment
+            balance = order_value - deposit_paid + accessories_amount
+            desc_text = f"Job No. {job_no} - {description}\n"
+            desc_text += f"Full Price: ${order_value:,.2f} - Deposit Paid: ${deposit_paid:,.2f}"
+            if accessories_amount > 0:
+                desc_text += f" + Accessories Ordered: ${accessories_amount:,.2f}"
+            desc_text += f"\nBalance Due: ${balance:,.2f}"
+        elif self.progressive_radio.isChecked():
+            # Progressive payment
+            balance = order_value - deposit_paid + accessories_amount
+            desc_text = f"Job No. {job_no} - {description}\n"
+            desc_text += f"Full Price: ${order_value:,.2f} - Deposit Paid: ${deposit_paid:,.2f}"
+            if accessories_amount > 0:
+                desc_text += f" + Accessories Ordered: ${accessories_amount:,.2f}"
+            desc_text += f"\nProgressive Balance Due: ${balance:,.2f}"
+        
+        self.description_edit.setPlainText(desc_text)
+    
+    def check_email_status(self):
+        """Check email status using existing Gmail service from main application"""
+        try:
+            print("🔍 Checking email status from main application...")
+            
+            # First, check if main application shows "Email: Ready"
+            main_app_ready = False
+            current_parent = self.parent()
+            while current_parent:
+                if hasattr(current_parent, 'email_status_label'):
+                    status_text = current_parent.email_status_label.text()
+                    if "Ready" in status_text:
+                        main_app_ready = True
+                        print(f"  ✅ Main application shows: '{status_text}'")
+                        break
+                current_parent = current_parent.parent()
+            
+            # Check if we have a valid Gmail API instance with service
+            if self.gmail_api and hasattr(self.gmail_api, 'service') and self.gmail_api.service:
+                # Use the existing Gmail service from main application
+                self.email_status_label.setText("✅ Email system ready")
+                self.email_status_label.setStyleSheet("color: #28a745; font-weight: bold;")
+                print("  ✅ Using existing Gmail service from main application")
+                return
+            elif self.gmail_api and hasattr(self.gmail_api, 'authenticate'):
+                # Try to authenticate the Gmail API
+                try:
+                    print("  🔐 Attempting to authenticate Gmail API...")
+                    self.gmail_api.authenticate()
+                    if hasattr(self.gmail_api, 'service') and self.gmail_api.service:
+                        self.email_status_label.setText("✅ Email system ready")
+                        self.email_status_label.setStyleSheet("color: #28a745; font-weight: bold;")
+                        print("  ✅ Gmail API authenticated successfully")
+                        return
+                    else:
+                        self.email_status_label.setText("❌ Gmail authentication failed")
+                        self.email_status_label.setStyleSheet("color: #dc3545; font-weight: bold;")
+                        print("  ❌ Gmail API authentication failed")
+                        return
+                except Exception as auth_error:
+                    print(f"  ❌ Gmail API authentication error: {auth_error}")
+                    self.email_status_label.setText("❌ Gmail authentication failed")
+                    self.email_status_label.setStyleSheet("color: #dc3545; font-weight: bold;")
+                    return
+            else:
+                self.email_status_label.setText("❌ Gmail service not available")
+                self.email_status_label.setStyleSheet("color: #dc3545; font-weight: bold;")
+                print("  ❌ Gmail service not available")
+                return
+            
+        except Exception as e:
+            print(f"  ❌ Error checking email status: {str(e)}")
+            self.email_status_label.setText(f"❌ Error checking email status: {str(e)}")
+            self.email_status_label.setStyleSheet("color: #dc3545; font-weight: bold;")
+    
+    def validate_form(self):
+        """Validate the form data"""
+        errors = []
+        
+        # Validate email system status by checking Gmail API authentication
+        try:
+            if self.gmail_api and hasattr(self.gmail_api, 'service') and self.gmail_api.service:
+                # Gmail API is properly authenticated
+                pass  # Service is available, no validation error
+            elif self.gmail_api and hasattr(self.gmail_api, 'authenticate'):
+                # Try to authenticate the Gmail API
+                try:
+                    self.gmail_api.authenticate()
+                    if hasattr(self.gmail_api, 'service') and self.gmail_api.service:
+                        pass  # Authentication successful, no validation error
+                    else:
+                        errors.append("Gmail API authentication failed. Please check your credentials.")
+                except Exception as auth_error:
+                    errors.append(f"Gmail API authentication error: {str(auth_error)}")
+            else:
+                errors.append("Gmail service not available. Please check the main application.")
+        except Exception as e:
+            errors.append(f"Gmail service error: {str(e)}")
+        
+        # Validate recipient
+        if not self.recipient_email_edit.text().strip():
+            errors.append("Recipient email is required")
+        elif not self.is_valid_email(self.recipient_email_edit.text().strip()):
+            errors.append("Invalid recipient email format")
+        
+        if not self.client_name_edit.text().strip():
+            errors.append("Client name is required")
+        
+        # Validate payment info
+        if not self.job_number_edit.text().strip():
+            errors.append("Job number is required")
+        
+        if not self.amount_edit.text().strip():
+            errors.append("Amount is required")
+        
+        return errors
+    
+    def is_valid_email(self, email):
+        """Check if email format is valid"""
+        import re
+        pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        return re.match(pattern, email) is not None
+    
+    def get_selected_payment_type(self):
+        """Get the selected payment type from radio buttons"""
+        if self.deposit_radio.isChecked():
+            return "deposit"
+        elif self.final_radio.isChecked():
+            return "final"
+        elif self.progressive_radio.isChecked():
+            return "progressive"
+        else:
+            return "deposit"  # Default
+    
+    def create_email_content(self):
+        """Create email content"""
+        job_number = self.job_number_edit.text().strip()
+        client_name = self.client_name_edit.text().strip()
+        recipient_email = self.recipient_email_edit.text().strip()
+        amount = self.amount_edit.text().strip()
+        description = self.description_edit.toPlainText().strip()
+        additional_message = self.message_edit.toPlainText().strip()
+        
+        # Get form URL from configuration
+        try:
+            from echeck_hosting_config import get_form_url
+            base_url = get_form_url()
+        except ImportError:
+            # Fallback to GitHub Pages URL if config not available
+            base_url = "https://designer-closets.github.io/Designer-Closets-Payment/"
+        
+        # Generate URL with pre-populated data
+        try:
+            from generate_echeck_url import ECheckURLGenerator
+            url_generator = ECheckURLGenerator(base_url)
+            
+            # Create form data for URL generation
+            form_data = {
+                'customerName': client_name,
+                'customerEmail': recipient_email,
+                'customerPhone': self.customer_data.get('phone', ''),
+                'jobNumber': job_number,
+                'amount': amount.replace('$', '').replace(',', ''),
+                'paymentType': self.get_selected_payment_type(),
+                'description': description
+            }
+            
+            form_url = url_generator.generate_url_from_form_data(form_data)
+        except ImportError:
+            # Fallback to base URL if generator not available
+            form_url = base_url
+            # Add URL parameters manually if generator not available
+            if form_data:
+                params = []
+                for key, value in form_data.items():
+                    if value:
+                        params.append(f"{key}={urllib.parse.quote(str(value))}")
+                if params:
+                    form_url += "?" + "&".join(params)
+        
+        subject = self.subject_edit.text().strip()
+        if not subject:
+            subject = f"E-Check Payment Form - Job #{job_number}"
+        
+        html_content = f"""
+        <html>
+        <head>
+            <style>
+                body {{ font-family: Arial, sans-serif; line-height: 1.6; }}
+                .header {{ background-color: #0066cc; color: white; padding: 20px; text-align: center; }}
+                .content {{ padding: 20px; }}
+                .button {{ background-color: #28a745; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block; }}
+                .footer {{ background-color: #f8f9fa; padding: 15px; text-align: center; font-size: 12px; color: #6c757d; }}
+                .important {{ background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 4px; margin: 15px 0; }}
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h1>E-Check Payment Form</h1>
+                <p>Job #{job_number}</p>
+            </div>
+            
+            <div class="content">
+                <p>Dear {client_name},</p>
+                
+                <p>Thank you for choosing our services. Please use the secure E-Check payment form below to complete your payment.</p>
+                
+                <div class="important">
+                    <strong>Payment Details:</strong><br>
+                    Amount: {amount}<br>
+                    Job Number: {job_number}<br>
+                    Description: {description or "Payment for services rendered"}
+                </div>
+                
+                <p><strong>Instructions:</strong></p>
+                <ol>
+                    <li>In the Web Page, fill out all required fields of information</li>
+                    <li>Review the payment details carefully</li>
+                    <li>Click "Process E-Check" to submit your payment</li>
+                    <li>You will receive a confirmation with your transaction ID</li>
+                </ol>
+                
+                <p style="text-align: center; margin: 30px 0;">
+                    <a href="{form_url}" class="button">Open Payment Form</a>
+                </p>
+                
+                <p style="text-align: center; margin: 15px 0; font-size: 12px; color: #666;">
+                    <em>If the button doesn't work, copy and paste this link into your browser:</em><br>
+                    <code>{form_url}</code>
+                </p>
+                
+                
+                {f'<p><strong>Additional Message:</strong><br>{additional_message}</p>' if additional_message else ''}
+               
+                <p>Best regards,<br>
+                Designer Closets & Cabinets,<br>
+                www.designer-closets.com<br>
+                Tel: (407) 505-0865</p>
+            </div>
+            
+            <div class="footer">
+                <p>This is a secure payment form. Please do not share this email with others.</p>
+                <p>Sent on {datetime.now().strftime('%B %d, %Y at %I:%M %p')}</p>
+            </div>
+        </body>
+        </html>
+        """
+        
+        return subject, html_content
+    
+    def send_email(self):
+        """Send the E-Check form email using Gmail API"""
+        # Validate form
+        errors = self.validate_form()
+        if errors:
+            error_msg = "\n".join(errors)
+            msg_box = QMessageBox.warning(self, "Validation Errors", error_msg)
+            
+            # Set up timer to auto-close after preference timeout
+            from PyQt5.QtCore import QTimer
+            from special_functions import get_auto_close_timeout
+            timer = QTimer()
+            timer.timeout.connect(msg_box.accept)
+            timer.start(get_auto_close_timeout())  # Use preference setting
+            msg_box.exec_()
+            return
+        
+        try:
+            # Get recipient email
+            recipient_email = self.recipient_email_edit.text().strip()
+            
+            # Create email content
+            subject, html_content = self.create_email_content()
+            
+            # Send email using Gmail API
+            if self.include_form_check.isChecked() and os.path.exists('echeck_web_form.html'):
+                # Send with attachment
+                success, message = self.gmail_api.send_email_with_attachment(
+                    to_email=recipient_email,
+                    subject=subject,
+                    html_content=html_content,
+                    attachment_path='echeck_web_form.html',
+                    from_name="Sales@designer-closets.com"
+                )
+            else:
+                # Send without attachment
+                success, message = self.gmail_api.send_email(
+                    to_email=recipient_email,
+                    subject=subject,
+                    html_content=html_content,
+                    from_name="Sales@designer-closets.com"
+                )
+            
+            if success:
+                # Email sent successfully - just close the dialog
+                self.accept()
+            else:
+                msg_box = QMessageBox.critical(self, "Email Error", 
+                                    f"Failed to send email: {message}")
+                
+                # Set up timer to auto-close after preference timeout
+                from PyQt5.QtCore import QTimer
+                from special_functions import get_auto_close_timeout
+                timer = QTimer()
+                timer.timeout.connect(msg_box.accept)
+                timer.start(get_auto_close_timeout())  # Use preference setting
+                msg_box.exec_()
+                
+                print(f"Email error: {message}")
+            
+        except Exception as e:
+            msg_box = QMessageBox.critical(self, "Email Error", 
+                               f"Failed to send email: {str(e)}\n\n"
+                               f"Please check your Gmail API connection and try again.")
+            
+            # Set up timer to auto-close after preference timeout
+            from PyQt5.QtCore import QTimer
+            from special_functions import get_auto_close_timeout
+            timer = QTimer()
+            timer.timeout.connect(msg_box.accept)
+            timer.start(get_auto_close_timeout())  # Use preference setting
+            msg_box.exec_()
+            
+            print(f"Email error: {e}")
 
-        // Call populate function on page load
-        window.addEventListener('load', populateFromUrl);
-    </script>
-</body>
-</html> 
+def main():
+    """Test the Email E-Check dialog"""
+    import sys
+    from PyQt5.QtWidgets import QApplication
+    
+    app = QApplication(sys.argv)
+    
+    # Test data
+    customer_data = {
+        'name': 'John Doe',
+        'email': 'john.doe@example.com',
+        'phone': '(555) 123-4567'
+    }
+    
+    job_data = {
+        'job_no': '250001',
+        'description': 'Kitchen Remodel - Final Payment'
+    }
+    
+    dialog = EmailECheckDialog(
+        customer_data=customer_data,
+        job_data=job_data,
+        amount=1500.00
+    )
+    
+    result = dialog.exec_()
+    
+    if result == QDialog.Accepted:
+        print("Email dialog accepted")
+    else:
+        print("Email dialog cancelled")
+    
+    sys.exit()
+
+if __name__ == "__main__":
+    main() 
